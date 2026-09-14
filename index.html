@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Interactive AppSec cost simulator comparing traditional SAST, LLM scanning in every CI build, and SAST with reusable AI-generated suppression rules."
+    />
+    <title>AppSec Cost Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="AppSec Economics home">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>APPSEC ECONOMICS</span>
+      </a>
+      <div class="topbar-actions">
+        <span class="privacy-chip"><span></span> Private model</span>
+        <button class="button button-secondary" id="resetButton" type="button">Reset assumptions</button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero section-shell" aria-labelledby="pageTitle">
+        <div class="eyebrow">Decision model · annualised</div>
+        <div class="hero-grid">
+          <div>
+            <h1 id="pageTitle">Put a price on your<br /><em>AppSec architecture.</em></h1>
+            <p class="hero-copy">
+              Compare traditional SAST, LLM scanning on every build, and a hybrid model that turns weekly AI triage into reusable suppression rules.
+            </p>
+          </div>
+          <div class="hero-verdict" aria-live="polite">
+            <div class="verdict-label">Lowest projected annual cost</div>
+            <div class="verdict-name" id="winnerName">SAST + weekly AI triage</div>
+            <div class="verdict-value" id="winnerCost">£0</div>
+            <div class="verdict-delta" id="winnerDelta">Calculating comparison…</div>
+            <a class="button button-primary" href="#simulator">Edit assumptions <span>↓</span></a>
+          </div>
+        </div>
+        <div class="metric-strip" aria-label="Executive summary">
+          <div class="metric">
+            <span class="metric-label">Potential annual saving</span>
+            <strong id="annualSaving">£0</strong>
+            <small id="savingAgainst">vs. next-best option</small>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Recovered engineering time</span>
+            <strong id="hoursRecovered">0 hrs</strong>
+            <small>vs. traditional SAST</small>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Hybrid payback</span>
+            <strong id="paybackPeriod">—</strong>
+            <small>AI-triage investment</small>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Annual CI builds</span>
+            <strong id="annualBuilds">0</strong>
+            <small>modelled runs</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="simulator section-shell" id="simulator" aria-labelledby="simulatorTitle">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">Interactive model</div>
+            <h2 id="simulatorTitle">Change any assumption.<br />See the decision move.</h2>
+          </div>
+          <p>All calculations run locally in your browser. Values are planning estimates, not vendor quotes.</p>
+        </div>
+
+        <div class="workspace">
+          <aside class="assumptions-panel" aria-label="Editable assumptions">
+            <div class="panel-title-row">
+              <h3>Assumptions</h3>
+              <span id="inputCount">18 inputs</span>
+            </div>
+
+            <details open>
+              <summary>Portfolio &amp; pipeline</summary>
+              <div class="input-grid">
+                <label class="field">
+                  <span>Codebase size <button class="info" data-tip="Total source code scanned on each full scan." type="button">i</button></span>
+                  <div class="input-wrap"><input id="codebaseKloc" type="number" min="1" step="10" value="500" /><b>KLOC</b></div>
+                </label>
+                <label class="field">
+                  <span>CI builds per day</span>
+                  <div class="input-wrap"><input id="buildsPerDay" type="number" min="0" step="1" value="80" /><b>builds</b></div>
+                </label>
+                <label class="field">
+                  <span>Working days per year</span>
+                  <div class="input-wrap"><input id="workingDays" type="number" min="1" max="366" step="1" value="250" /><b>days</b></div>
+                </label>
+                <label class="field">
+                  <span>Developers affected per build</span>
+                  <div class="input-wrap"><input id="developersPerBuild" type="number" min="0" step="1" value="1" /><b>people</b></div>
+                </label>
+              </div>
+            </details>
+
+            <details open>
+              <summary>SAST &amp; CI economics</summary>
+              <div class="input-grid">
+                <label class="field">
+                  <span>Annual SAST licence</span>
+                  <div class="input-wrap prefix"><b>£</b><input id="sastLicence" type="number" min="0" step="1000" value="150000" /></div>
+                </label>
+                <label class="field">
+                  <span>SAST infrastructure per scan</span>
+                  <div class="input-wrap prefix"><b>£</b><input id="sastPerScan" type="number" min="0" step="0.1" value="1.5" /></div>
+                </label>
+                <label class="field">
+                  <span>SAST added CI duration</span>
+                  <div class="input-wrap"><input id="sastMinutes" type="number" min="0" step="0.5" value="4" /><b>min</b></div>
+                </label>
+                <label class="field">
+                  <span>LLM added CI duration</span>
+                  <div class="input-wrap"><input id="llmMinutes" type="number" min="0" step="0.5" value="14" /><b>min</b></div>
+                </label>
+                <label class="field">
+                  <span>Developer loaded cost</span>
+                  <div class="input-wrap prefix"><b>£</b><input id="developerHourlyCost" type="number" min="0" step="5" value="90" /><em>/hr</em></div>
+                </label>
+                <label class="field">
+                  <span>Delay on critical path</span>
+                  <div class="input-wrap"><input id="criticalPathPercent" type="number" min="0" max="100" step="5" value="35" /><b>%</b></div>
+                </label>
+              </div>
+            </details>
+
+            <details open>
+              <summary>LLM scan pricing</summary>
+              <div class="segmented" role="group" aria-label="LLM pricing mode">
+                <button class="segment active" type="button" data-mode="tokens">Token pricing</button>
+                <button class="segment" type="button" data-mode="fixed">Per-scan price</button>
+              </div>
+              <input id="llmCostMode" type="hidden" value="tokens" />
+              <div class="input-grid mode-panel" data-panel="tokens">
+                <label class="field">
+                  <span>Tokens per KLOC</span>
+                  <div class="input-wrap"><input id="tokensPerKloc" type="number" min="0" step="100" value="7000" /><b>tokens</b></div>
+                </label>
+                <label class="field">
+                  <span>Blended price per 1M tokens</span>
+                  <div class="input-wrap prefix"><b>£</b><input id="tokenPricePerMillion" type="number" min="0" step="0.5" value="8" /><em>/1M</em></div>
+                </label>
+              </div>
+              <div class="input-grid mode-panel hidden" data-panel="fixed">
+                <label class="field full">
+                  <span>LLM cost per full scan</span>
+                  <div class="input-wrap prefix"><b>£</b><input id="llmFixedPerScan" type="number" min="0" step="1" value="28" /></div>
+                </label>
+              </div>
+            </details>
+
+            <details open>
+              <summary>Findings &amp; AI triage</summary>
+              <div class="input-grid">
+                <label class="field">
+                  <span>False positives per build <button class="info" data-tip="Repeated or newly surfaced false positives that would otherwise require human disposition." type="button">i</button></span>
+                  <div class="input-wrap"><input id="falsePositivesPerBuild" type="number" min="0" step="1" value="6" /><b>FPs</b></div>
+                </label>
+                <label class="field">
+                  <span>Review time per false positive</span>
+                  <div class="input-wrap"><input id="reviewMinutesPerFp" type="number" min="0" step="1" value="12" /><b>min</b></div>
+                </label>
+                <label class="field">
+                  <span>LLM false-positive reduction</span>
+                  <div class="input-wrap"><input id="llmFpReduction" type="number" min="0" max="100" step="5" value="45" /><b>%</b></div>
+                </label>
+                <label class="field">
+                  <span>Reusable suppression efficacy</span>
+                  <div class="input-wrap"><input id="suppressionEfficacy" type="number" min="0" max="100" step="5" value="85" /><b>%</b></div>
+                </label>
+                <label class="field">
+                  <span>AI-triage runs per week</span>
+                  <div class="input-wrap"><input id="triageRunsPerWeek" type="number" min="0.1" max="7" step="0.5" value="1" /><b>runs</b></div>
+                </label>
+                <label class="field">
+                  <span>AI-triage cost per run</span>
+                  <div class="input-wrap prefix"><b>£</b><input id="triageCostPerRun" type="number" min="0" step="5" value="120" /></div>
+                </label>
+              </div>
+            </details>
+          </aside>
+
+          <div class="results-panel">
+            <div class="results-toolbar">
+              <div>
+                <span class="mini-label">Executive comparison</span>
+                <h3>Annual total cost of ownership</h3>
+              </div>
+              <button class="button button-secondary" id="copySummaryButton" type="button">Copy summary</button>
+            </div>
+
+            <div class="strategy-cards" id="strategyCards" aria-live="polite"></div>
+
+            <article class="chart-card" aria-labelledby="costChartTitle">
+              <div class="chart-heading">
+                <div>
+                  <span class="mini-label">Cost composition</span>
+                  <h3 id="costChartTitle">Where the money goes</h3>
+                </div>
+                <div class="legend" aria-label="Chart legend">
+                  <span><i class="dot direct"></i> Direct spend</span>
+                  <span><i class="dot delay"></i> CI delay</span>
+                  <span><i class="dot review"></i> Human review</span>
+                </div>
+              </div>
+              <div id="costChart" class="cost-chart" role="img" aria-label="Stacked bars comparing annual costs"></div>
+            </article>
+
+            <div class="break-even-grid">
+              <article class="break-even-card accent">
+                <span class="mini-label">LLM scan break-even</span>
+                <strong id="llmBreakEven">£0 / scan</strong>
+                <p id="llmBreakEvenCopy">Calculating…</p>
+              </article>
+              <article class="break-even-card">
+                <span class="mini-label">Suppression break-even</span>
+                <strong id="suppressionBreakEven">0%</strong>
+                <p id="suppressionBreakEvenCopy">Calculating…</p>
+              </article>
+            </div>
+
+            <article class="chart-card" aria-labelledby="sensitivityTitle">
+              <div class="chart-heading">
+                <div>
+                  <span class="mini-label">Sensitivity</span>
+                  <h3 id="sensitivityTitle">Cost as suppression improves</h3>
+                </div>
+                <span class="current-marker" id="currentSuppressionLabel">Current: 85%</span>
+              </div>
+              <div id="sensitivityChart" class="sensitivity-chart" role="img" aria-label="Line chart showing hybrid cost at different suppression efficacy levels"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="method section-shell" aria-labelledby="methodTitle">
+        <div>
+          <div class="eyebrow">Model notes</div>
+          <h2 id="methodTitle">Transparent enough<br />to challenge.</h2>
+        </div>
+        <div class="method-grid">
+          <article>
+            <span>01</span>
+            <h3>Total cost</h3>
+            <p>Direct tool and compute spend + the loaded cost of CI waiting + human false-positive review.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Reusable rules</h3>
+            <p>Each triage cycle pays the review cost once, then suppresses the chosen share of repeats until the next cycle.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Break-even</h3>
+            <p>The model solves for the LLM price or suppression efficacy at which two strategies have equal annual TCO.</p>
+          </article>
+        </div>
+        <div class="formula-note">
+          <strong>Scope note</strong>
+          <p>This is a comparative planning model. It excludes migration, governance, model-validation and incident-risk costs; add those to a formal business case.</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">Summary copied</div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
