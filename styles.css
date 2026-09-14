@@ -226,6 +226,18 @@ details[open] summary::after { content: "\2212"; }
 .formula-note { border: 1px solid rgba(255,255,255,.15); border-radius: 12px; grid-column: 2; padding: 14px 16px; }
 .formula-note strong { font-size: 11px; }
 .formula-note p { color: #9cafaa; font-size: 10px; line-height: 1.6; margin: 4px 0 0; }
+
+.implementation { padding-bottom: 90px; padding-top: 80px; }
+.implementation-intro { color: var(--muted); font-size: 15px; line-height: 1.7; max-width: 760px; margin: 18px 0 54px; }
+.implementation-grid { display: grid; gap: 14px; grid-template-columns: repeat(4, 1fr); margin-bottom: 48px; }
+.implementation-grid article { border-top: 1px solid var(--line); padding-top: 18px; }
+.implementation-grid article > span { color: var(--lime); font-family: "DM Mono", monospace; font-size: 10px; }
+.implementation-grid h3 { font-size: 17px; margin: 14px 0 8px; }
+.implementation-grid p { color: var(--muted); font-size: 12px; line-height: 1.65; margin: 0; }
+.implementation-cta { align-items: center; display: flex; gap: 24px; justify-content: space-between; flex-wrap: wrap; }
+.implementation-note { color: var(--muted); font-family: "DM Mono", monospace; font-size: 11px; margin: 0; }
+.implementation-note a { color: var(--mint-strong); }
+
 .toast { background: var(--ink); border-radius: 999px; bottom: 24px; color: white; font-size: 11px; left: 50%; opacity: 0; padding: 11px 18px; pointer-events: none; position: fixed; transform: translate(-50%, 12px); transition: .2s; z-index: 20; }
 .toast.visible { opacity: 1; transform: translate(-50%, 0); }
 

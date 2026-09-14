@@ -247,6 +247,42 @@
         </div>
       </section>
 
+      <section class="implementation section-shell" aria-labelledby="implementationTitle">
+        <div>
+          <div class="eyebrow">Implementation</div>
+          <h2 id="implementationTitle">The hybrid model,<br />turned into a control plane.</h2>
+        </div>
+        <p class="implementation-intro">
+          The simulator above models a hybrid approach: SAST running in CI, plus a weekly AI triage cycle that converts reviewer decisions into reusable suppression rules. AutoTriage is the open-source project that implements that control plane.
+        </p>
+        <div class="implementation-grid">
+          <article>
+            <span>01</span>
+            <h3>Separation from CI</h3>
+            <p>Expensive LLM security testing runs on a schedule, not on every build. CI pipelines keep running fast SAST tooling, gated by signed suppression bundles rather than raw scanner output.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Suppression as output</h3>
+            <p>Each triage cycle pays the review cost once, then writes reusable suppression rules back to the repo. That is the mechanism behind the hybrid strategy's recovered engineering time in the model.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Governed decisions</h3>
+            <p>Findings are classified by repo-managed CEL policy into true positive, potential false positive, and false positive. Only the ambiguous band reaches a human reviewer, with a full audit trail.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>From review to PR</h3>
+            <p>When a reviewer approves a finding as a false positive, triage automation opens a suppression update as a pull request. The rule becomes part of the repo's governed history, not a one-off judgment.</p>
+          </article>
+        </div>
+        <div class="implementation-cta">
+          <a class="button button-primary" href="https://github.com/hoggmania/AutoTriage" target="_blank" rel="noopener">View AutoTriage on GitHub <span>&rarr;</span></a>
+          <p class="implementation-note">Open source &middot; MIT license &middot; <a href="https://github.com/hoggmania/AutoTriage">hoggmania/AutoTriage</a></p>
+        </div>
+      </section>
+
       <section class="method section-shell" aria-labelledby="methodTitle">
         <div>
           <div class="eyebrow">Model notes</div>
